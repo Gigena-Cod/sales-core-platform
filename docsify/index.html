@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>TP Aplicaciones Web 2 - Sales Core Platform</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="description" content="Trabajo Práctico de Aplicaciones Web 2 - Documentación completa">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <style>
+    /* Estilos personalizados para el TP */
+    .sidebar {
+      background-color: #f8f9fa;
+    }
+    
+    .content {
+      padding-top: 60px;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    
+    h2 {
+      color: #34495e;
+      border-left: 4px solid #3498db;
+      padding-left: 15px;
+    }
+    
+    .badge {
+      background-color: #3498db;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .tp-highlight {
+      background-color: #e8f4fd;
+      border-left: 4px solid #3498db;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+    
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .checklist li {
+      padding: 5px 0;
+    }
+    
+    .checklist li:before {
+      content: " ";
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      background-color: #27ae60;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script>
+    window.$docsify = {
+      name: 'TP Aplicaciones Web 2',
+      repo: 'https://github.com/TU_USERNAME/sales-core-platform',
+      loadSidebar: true,
+      loadNavbar: true,
+      maxLevel: 4,
+      subMaxLevel: 2,
+      search: 'auto',
+      search: [
+        '/',            // README.md
+        '/guide/',      // guide folder
+        '/backend/',    // backend mock data
+      ],
+      auto2top: true,
+      coverpage: false,
+      onlyCover: false,
+      routerMode: 'hash',
+      ga: 'UA-XXXXX-Y',
+      
+      // Configuración de plugins
+      copyCode: {
+        buttonText: 'Copiar',
+        errorText: 'Error al copiar',
+        successText: 'Copiado'
+      },
+      
+      pagination: {
+        previousText: 'Anterior',
+        nextText: 'Siguiente',
+        crossChapter: true,
+        crossChapterText: true,
+      },
+      
+      tabs: {
+        persist: true,
+        sync: true,
+        theme: 'classic',
+        tabComments: true,
+        tabHeadings: true
+      }
+    }
+  </script>
+  
+  <!-- Docsify Core -->
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  
+  <!-- Plugins -->
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
+  
+  <!-- Plugins adicionales para el TP -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
+  
+  <!-- Plugin personalizado para validación del TP -->
+  <script>
+    // Inicializar cuando Docsify cargue
+    setTimeout(function() {
+      console.log('TP Aplicaciones Web 2 - Documentation loaded');
+      console.log('Estructura: docsify/ con guide/ y backend/ folders');
+    }, 1000);
+  </script>
+</body>
+</html>
