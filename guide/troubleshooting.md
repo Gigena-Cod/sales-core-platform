@@ -1,23 +1,486 @@
-# Troubleshooting
+# Troubleshooting - TP Aplicaciones Web 2
 
-## Problemas Comunes
+## Problemas Comunes del TP
 
-### Instalación
+### Entrega 1 - Estructura de Datos
 
-#### npm install falla
+#### JSON no válido
 
 **Problema:**
 ```bash
-npm ERR! code ERESOLVE
-npm ERR! ERESOLVE unable to resolve dependency tree
+Error: Unexpected token } in JSON at position 123
+```
+
+**Causas Comunes:**
+- Comas extra al final de arrays/objetos
+- Comillas faltantes en strings
+- Comentarios en archivos JSON (no permitidos)
+
+**Soluciones:**
+```bash
+# Validar JSON con Python
+python -m json.tool mocks/usuarios.json
+
+# Validar con Node.js
+node -e "console.log(JSON.parse(require('fs').readFileSync('mocks/usuarios.json')))"
+
+# Herramienta online: https://jsonlint.com/
+```
+
+#### Relaciones inconsistentes
+
+**Problema:**
+```javascript
+// ventas.json tiene id_usuario que no existe en usuarios.json
+{
+  "id_usuario": 999,  // Este usuario no existe
+  // ...
+}
+```
+
+**Solución:**
+```javascript
+// Script para verificar relaciones
+const validateRelationships = () => {
+  const users = require('./mocks/usuarios.json');
+  const products = require('./mocks/productos.json');
+  const sales = require('./mocks/ventas.json');
+  
+  const userIds = users.map(u => u.id);
+  const productIds = products.map(p => p.id);
+  
+  sales.forEach(sale => {
+    if (!userIds.includes(sale.id_usuario)) {
+      console.error(`Venta ${sale.id}: Usuario ${sale.id_usuario} no existe`);
+    }
+    
+    sale.productos.forEach(item => {
+      if (!productIds.includes(item.id_producto)) {
+        console.error(`Venta ${sale.id}: Producto ${item.id_producto} no existe`);
+      }
+    });
+  });
+};
+```
+
+#### Docsify no funciona
+
+**Problema:**
+- La documentación no carga
+- Menú lateral no aparece
+- Búsqueda no funciona
+
+**Soluciones:**
+```html
+<!-- Verificar configuración en index.html -->
+<script>
+  window.$docsify = {
+    name: 'TP Aplicaciones Web 2',
+    loadSidebar: true,      // Asegurar que sea true
+    loadNavbar: true,       // Asegurar que sea true
+    search: 'auto',         // Para búsqueda
+    maxLevel: 4,
+    subMaxLevel: 2
+  }
+</script>
+
+<!-- Verificar que los archivos existan -->
+<!-- _sidebar.md y _navbar.md deben existir -->
+```
+
+#### Servidor local no funciona
+
+**Problema:**
+```bash
+python -m http.server 8080
+# Error: Address already in use
 ```
 
 **Soluciones:**
 ```bash
-# Limpiar caché de npm
-npm cache clean --force
+# Opción 1: Cambiar puerto
+python -m http.server 8081
 
-# Eliminar node_modules y package-lock.json
+# Opción 2: Matar proceso en puerto 8080
+# Windows:
+netstat -ano | findstr :8080
+taskkill /PID <PID> /F
+
+# Mac/Linux:
+lsof -ti:8080 | xargs kill -9
+
+# Opción 3: Usar VS Code Live Server
+# Extensión: Live Server
+# Click derecho -> Open with Live Server
+```
+
+### Entrega 2 - Frontend
+
+#### Fetch API no encuentra archivos JSON
+
+**Problema:**
+```javascript
+// Error en consola
+GET http://localhost:8080/mocks/usuarios.json 404 (Not Found)
+```
+
+**Causas:**
+- Archivos JSON en ubicación incorrecta
+- Problemas de CORS
+- Rutas relativas incorrectas
+
+**Soluciones:**
+```javascript
+// Usar rutas absolutas
+const response = await fetch('/mocks/usuarios.json');
+
+// O verificar ubicación actual
+console.log(window.location.origin);
+
+// Estructura correcta:
+// public/
+//   index.html
+// mocks/           // JSON debe estar aquí o en raíz
+```
+
+#### Responsive design no funciona
+
+**Problema:**
+- La aplicación se ve mal en móvil
+- Elementos se superponen
+- Texto ilegible
+
+**Soluciones:**
+```css
+/* Agregar viewport meta tag */
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+/* Media queries básicas */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+  
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Usar unidades relativas */
+.container {
+  width: 95%; /* En lugar de px fijos */
+  max-width: 1200px;
+}
+```
+
+#### Validación de formularios no funciona
+
+**Problema:**
+```javascript
+// Formulario se envía vacío
+// Validaciones no se ejecutan
+```
+
+**Soluciones:**
+```html
+<!-- Prevenir envío por defecto -->
+<form id="saleForm" onsubmit="return validateForm(event)">
+
+<script>
+function validateForm(event) {
+  event.preventDefault(); // Importante!
+  
+  const formData = new FormData(event.target);
+  const data = Object.fromEntries(formData);
+  
+  // Validaciones
+  if (!data.customerName) {
+    alert('El nombre del cliente es requerido');
+    return false;
+  }
+  
+  // Procesar formulario
+  submitForm(data);
+  return false;
+}
+</script>
+```
+
+### Problemas Generales del TP
+
+#### Git y GitHub Issues
+
+**Problema:**
+```bash
+# Push rechazado
+! [rejected] main -> main (non-fast-forward)
+```
+
+**Soluciones:**
+```bash
+# Opción 1: Forzar push (cuidado!)
+git push --force origin main
+
+# Opción 2: Pull y merge
+git pull origin main --rebase
+git push origin main
+
+# Opción 3: Clonar fresh
+cd ..
+git clone https://github.com/TU_USERNAME/sales-core-platform.git
+# Copiar archivos del repo viejo al nuevo
+```
+
+#### GitHub Pages no actualiza
+
+**Problema:**
+- Los cambios no aparecen en GitHub Pages
+- Muestra versión antigua
+
+**Soluciones:**
+```bash
+# 1. Verificar que el repo sea público
+# GitHub Settings -> Pages -> Source
+
+# 2. Forzar rebuild
+git commit --allow-empty -m "Trigger rebuild"
+git push origin main
+
+# 3. Esperar 10 minutos (GitHub Pages tiene cache)
+
+# 4. Limpiar cache del navegador
+# Ctrl+Shift+R o Cmd+Shift+R
+```
+
+#### Evaluador no puede acceder
+
+**Problema:**
+- El evaluador reporta "404 Not Found"
+- No puede ver la documentación
+
+**Checklist de Accesibilidad:**
+```bash
+# 1. Verificar que el repo sea PÚBLICO
+# GitHub Settings -> Scroll down -> Danger Zone -> Change visibility
+
+# 2. Verificar GitHub Pages activado
+# Settings -> Pages -> Source: Deploy from a branch
+
+# 3. Testear URL en modo incógnito
+# https://TU_USERNAME.github.io/sales-core-platform
+
+# 4. Verificar estructura mínima
+ls -la
+# Debe existir: index.html
+```
+
+## Debugging Tools
+
+### Browser DevTools
+
+#### Console Errors
+```javascript
+// Para debugging de JSON
+fetch('/mocks/usuarios.json')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => console.log('Data loaded:', data))
+  .catch(error => console.error('Error:', error));
+```
+
+#### Network Tab
+- Verificar que los archivos JSON carguen (Status 200)
+- Checkear tiempos de carga
+- Identificar archivos no encontrados (404)
+
+#### Responsive Testing
+- DevTools -> Toggle device toolbar
+- Probar diferentes tamaños de pantalla
+- Verificar media queries
+
+### Scripts de Validación
+
+#### validate-tp.js
+```javascript
+// Script completo para validar entrega 1
+const fs = require('fs');
+const path = require('path');
+
+class TPValidator {
+  constructor() {
+    this.errors = [];
+    this.warnings = [];
+  }
+
+  validateEntrega1() {
+    console.log('=== Validando Entrega 1 - TP Aplicaciones Web 2 ===');
+    
+    this.checkJSONFiles();
+    this.checkDataTypes();
+    this.checkCoherence();
+    this.checkDocumentation();
+    
+    this.generateReport();
+  }
+
+  checkJSONFiles() {
+    const requiredFiles = ['usuarios.json', 'productos.json', 'ventas.json'];
+    
+    requiredFiles.forEach(file => {
+      const filePath = path.join('mocks', file);
+      if (!fs.existsSync(filePath)) {
+        this.errors.push(`Archivo faltante: ${file}`);
+        return;
+      }
+      
+      try {
+        const content = fs.readFileSync(filePath, 'utf8');
+        JSON.parse(content);
+        console.log(`\u2713 ${file} - JSON válido`);
+      } catch (error) {
+        this.errors.push(`JSON inválido en ${file}: ${error.message}`);
+      }
+    });
+  }
+
+  checkDataTypes() {
+    try {
+      const users = JSON.parse(fs.readFileSync('mocks/usuarios.json', 'utf8'));
+      const products = JSON.parse(fs.readFileSync('mocks/productos.json', 'utf8'));
+      const sales = JSON.parse(fs.readFileSync('mocks/ventas.json', 'utf8'));
+
+      // Verificar tipos de datos en usuarios
+      users.forEach((user, index) => {
+        if (typeof user.id !== 'number') {
+          this.errors.push(`Usuario ${index + 1}: id debe ser number`);
+        }
+        if (typeof user.activo !== 'boolean') {
+          this.errors.push(`Usuario ${index + 1}: activo debe ser boolean`);
+        }
+        if (typeof user.premium !== 'boolean') {
+          this.warnings.push(`Usuario ${index + 1}: premium debería ser boolean`);
+        }
+      });
+
+      console.log('\u2713 Tipos de datos verificados');
+    } catch (error) {
+      this.errors.push(`Error verificando tipos: ${error.message}`);
+    }
+  }
+
+  checkCoherence() {
+    try {
+      const users = JSON.parse(fs.readFileSync('mocks/usuarios.json', 'utf8'));
+      const products = JSON.parse(fs.readFileSync('mocks/productos.json', 'utf8'));
+      const sales = JSON.parse(fs.readFileSync('mocks/ventas.json', 'utf8'));
+
+      const userIds = users.map(u => u.id);
+      const productIds = products.map(p => p.id);
+
+      sales.forEach((sale, index) => {
+        if (!userIds.includes(sale.id_usuario)) {
+          this.errors.push(`Venta ${index + 1}: id_usuario ${sale.id_usuario} no existe`);
+        }
+        
+        sale.productos.forEach((item, itemIndex) => {
+          if (!productIds.includes(item.id_producto)) {
+            this.errors.push(`Venta ${index + 1}, producto ${itemIndex + 1}: id_producto ${item.id_producto} no existe`);
+          }
+        });
+      });
+
+      console.log('\u2713 Coherencia de datos verificada');
+    } catch (error) {
+      this.errors.push(`Error verificando coherencia: ${error.message}`);
+    }
+  }
+
+  checkDocumentation() {
+    const requiredDocs = ['index.html', '_sidebar.md', '_navbar.md', 'README.md'];
+    
+    requiredDocs.forEach(doc => {
+      if (!fs.existsSync(doc)) {
+        this.errors.push(`Documento faltante: ${doc}`);
+      }
+    });
+
+    // Verificar configuración de Docsify
+    if (fs.existsSync('index.html')) {
+      const content = fs.readFileSync('index.html', 'utf8');
+      if (!content.includes('window.$docsify')) {
+        this.warnings.push('index.html no tiene configuración de Docsify');
+      }
+    }
+
+    console.log('\u2713 Documentación verificada');
+  }
+
+  generateReport() {
+    console.log('\n=== REPORTE DE VALIDACIÓN ===');
+    
+    if (this.errors.length === 0 && this.warnings.length === 0) {
+      console.log('\u2705 VALIDACIÓN EXITOSA - Todo está correcto');
+      return true;
+    }
+
+    if (this.errors.length > 0) {
+      console.log('\n\u274c ERRORES (deben corregirse):');
+      this.errors.forEach(error => console.log(`  - ${error}`));
+    }
+
+    if (this.warnings.length > 0) {
+      console.log('\n\u26a0\ufe0f ADVERTENCIAS (recomendado corregir):');
+      this.warnings.forEach(warning => console.log(`  - ${warning}`));
+    }
+
+    const score = Math.max(0, 10 - this.errors.length - (this.warnings.length * 0.5));
+    console.log(`\n\ud83d\udcca Calificación estimada: ${score.toFixed(1)}/10`);
+
+    return this.errors.length === 0;
+  }
+}
+
+// Ejecutar validación
+const validator = new TPValidator();
+validator.validateEntrega1();
+```
+
+## Contacto y Soporte
+
+### Para Problemas del TP
+
+1. **Revisa esta guía primero** - La mayoría de los problemas están documentados
+2. **Consulta el foro de la materia** - Otros estudiantes pueden haber tenido el mismo problema
+3. **Contacta al tutor** - Si el problema persiste después de intentar las soluciones
+
+### Información de Soporte
+
+```markdown
+### Reporte de Problemas
+
+**Contexto:**
+- Materia: Aplicaciones Web 2
+- Entrega: [1/2/Final]
+- Problema: [Descripción breve]
+
+**Pasos ya intentados:**
+1. [Listar soluciones intentadas]
+
+**Screenshots:**
+[Adjuntar capturas de errores]
+
+**Links:**
+- Repositorio: https://github.com/TU_USERNAME/sales-core-platform
+- Deploy: https://TU_USERNAME.github.io/sales-core-platform
+```
+
+---
+
+**Recuerda**: Los problemas técnicos son normales en el desarrollo. Lo importante es documentarlos, intentar soluciones sistemáticas, y aprender del proceso de debugging.
 rm -rf node_modules package-lock.json
 
 # Reinstalar
