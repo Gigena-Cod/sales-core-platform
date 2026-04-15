@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "nombre": "Juan",
+    "apellido": "Pérez",
+    "email": "juan.perez@email.com",
+    "contraseña": "hashed_password_123",
+    "activo": true,
+    "fecha_registro": "2024-01-15",
+    "telefono": "11-1234-5678",
+    "premium": false
+  },
+  {
+    "id": 2,
+    "nombre": "María",
+    "apellido": "González",
+    "email": "maria.gonzalez@email.com",
+    "contraseña": "hashed_password_456",
+    "activo": true,
+    "fecha_registro": "2024-02-20",
+    "telefono": "11-2345-6789",
+    "premium": true
+  },
+  {
+    "id": 3,
+    "nombre": "Carlos",
+    "apellido": "Rodríguez",
+    "email": "carlos.rodriguez@email.com",
+    "contraseña": "hashed_password_789",
+    "activo": false,
+    "fecha_registro": "2024-03-10",
+    "telefono": "11-3456-7890",
+    "premium": false
+  },
+  {
+    "id": 4,
+    "nombre": "Ana",
+    "apellido": "Martínez",
+    "email": "ana.martinez@email.com",
+    "contraseña": "hashed_password_012",
+    "activo": true,
+    "fecha_registro": "2024-03-25",
+    "telefono": "11-4567-8901",
+    "premium": true
+  },
+  {
+    "id": 5,
+    "nombre": "Luis",
+    "apellido": "Sánchez",
+    "email": "luis.sanchez@email.com",
+    "contraseña": "hashed_password_345",
+    "activo": true,
+    "fecha_registro": "2024-04-05",
+    "telefono": "11-5678-9012",
+    "premium": false
+  }
+]
