@@ -1,352 +1,546 @@
-# Referencia de Datos - TP Aplicaciones Web 2
+# Referencia de API - TP Aplicaciones Web 2
 
-## Estructura Actual (Entrega 1)
+## Estructura Actual (Entrega 2)
 
-Actualmente los datos se almacenan en archivos JSON estáticos en la carpeta `mocks/`. Estos archivos simulan una API REST para fines del desarrollo inicial.
+Actualmente los datos se gestionan a través de una **API REST con Express.js** que corre en `http://localhost:3000`. Esta API reemplaza el acceso directo a archivos JSON estáticos y proporciona endpoints completos para el CRUD de datos.
 
-## Endpoints Simulados
+## Endpoints de la API
 
 ### Usuarios
 
-#### GET /mocks/usuarios.json
+#### GET /api/usuarios
 Obtiene la lista completa de usuarios.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/usuarios
+```
 
 **Response:**
 ```json
-[
-  {
-    "id": 1,
-    "nombre": "Juan",
-    "apellido": "Pérez",
-    "email": "juan.perez@email.com",
-    "contraseña": "hashed_password_123",
-    "activo": true,
-    "fecha_registro": "2024-01-15",
-    "telefono": "11-1234-5678",
-    "premium": false
-  }
-]
+{
+  "message": "Usuarios obtenidos correctamente",
+  "total": 5,
+  "data": [
+    {
+      "id": 1,
+      "nombre": "Juan",
+      "apellido": "Pérez",
+      "email": "juan.perez@email.com",
+      "contraseña": "hashed_password_123",
+      "activo": true,
+      "fecha_registro": "2024-01-15",
+      "telefono": "11-1234-5678",
+      "premium": false
+    }
+  ]
+}
 ```
 
-#### GET /mocks/usuarios.json?id={id}
-Simula obtener un usuario específico (filtrado cliente).
+#### GET /api/usuarios/:id
+Obtiene un usuario específico por ID.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/usuarios/1
+```
 
 **JavaScript:**
 ```javascript
 // Obtener usuario por ID
 const getUserById = async (id) => {
-  const response = await fetch('/mocks/usuarios.json');
-  const users = await response.json();
-  return users.find(user => user.id === parseInt(id));
+  const response = await fetch(`http://localhost:3000/api/usuarios/${id}`);
+  const result = await response.json();
+  return result.data;
 };
 ```
 
 ### Productos
 
-#### GET /mocks/productos.json
+#### GET /api/productos
 Obtiene el catálogo completo de productos.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/productos
+```
 
 **Response:**
 ```json
-[
-  {
-    "id": 1,
-    "nombre": "Laptop Dell Inspiron 15",
-    "desc": "Laptop de 15.6 pulgadas con Intel Core i5...",
-    "precio": 899.99,
-    "imagen": "https://example.com/images/laptop-dell-15.jpg",
-    "stock": 25,
-    "categoria": "Electrónica",
-    "disponible": true,
-    "destacado": true,
-    "peso": 2.5,
-    "garantia": 12
-  }
-]
+{
+  "message": "Productos obtenidos correctamente",
+  "total": 8,
+  "data": [
+    {
+      "id": 1,
+      "nombre": "Laptop Dell Inspiron 15",
+      "desc": "Laptop de 15.6 pulgadas con Intel Core i5...",
+      "precio": 899.99,
+      "imagen": "https://example.com/images/laptop-dell-15.jpg",
+      "stock": 25,
+      "categoria": "Electrónica",
+      "disponible": true,
+      "destacado": true,
+      "peso": 2.5,
+      "garantia": 12
+    }
+  ]
+}
 ```
 
-#### GET /mocks/productos.json?categoria={categoria}
-Simula filtrado por categoría.
+#### GET /api/productos/categoria/:categoria
+Filtra productos por categoría.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/productos/categoria/electronica
+```
 
 **JavaScript:**
 ```javascript
 // Filtrar productos por categoría
 const getProductsByCategory = async (category) => {
-  const response = await fetch('/mocks/productos.json');
-  const products = await response.json();
-  return products.filter(product => product.categoria === category);
+  const response = await fetch(`http://localhost:3000/api/productos/categoria/${category}`);
+  const result = await response.json();
+  return result.data;
 };
 ```
 
 ### Ventas
 
-#### GET /mocks/ventas.json
+#### GET /api/ventas
 Obtiene el historial completo de ventas.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/ventas
+```
 
 **Response:**
 ```json
-[
-  {
-    "id": 1,
-    "id_usuario": 1,
-    "fecha": "2024-04-10T14:30:00Z",
-    "total": 999.98,
-    "direccion": "Av. Corrientes 1234, Buenos Aires, Argentina",
-    "productos": [
-      {
-        "id_producto": 1,
-        "cantidad": 1,
-        "precio_unitario": 899.99,
-        "subtotal": 899.99
-      }
-    ],
-    "metodo_pago": "tarjeta_credito",
-    "envio_gratis": false,
-    "estado": "completado",
-    "codigo_seguimiento": "ARG123456789"
-  }
-]
+{
+  "message": "Ventas obtenidas correctamente",
+  "total": 6,
+  "data": [
+    {
+      "id": 1,
+      "id_usuario": 1,
+      "fecha": "2024-04-10T14:30:00Z",
+      "total": 999.98,
+      "direccion": "Av. Corrientes 1234, Buenos Aires, Argentina",
+      "productos": [
+        {
+          "id_producto": 1,
+          "cantidad": 1,
+          "precio_unitario": 899.99,
+          "subtotal": 899.99
+        }
+      ],
+      "metodo_pago": "tarjeta_credito",
+      "envio_gratis": false,
+      "estado": "completado",
+      "codigo_seguimiento": "ARG123456789"
+    }
+  ]
+}
 ```
 
-#### GET /mocks/ventas.json?id_usuario={id}
-Simula obtener ventas por usuario.
+#### GET /api/ventas/usuario/:id
+Obtiene ventas por usuario.
+
+**Request:**
+```bash
+curl http://localhost:3000/api/ventas/usuario/1
+```
 
 **JavaScript:**
 ```javascript
 // Obtener ventas por usuario
 const getSalesByUser = async (userId) => {
-  const response = await fetch('/mocks/ventas.json');
-  const sales = await response.json();
-  return sales.filter(sale => sale.id_usuario === parseInt(userId));
+  const response = await fetch(`http://localhost:3000/api/ventas/usuario/${userId}`);
+  const result = await response.json();
+  return result.data;
 };
 ```
 
-## Operaciones CRUD Simuladas
+## Operaciones CRUD Reales
 
-### Crear (Simulado)
+### Crear Usuario
 ```javascript
-// Simular creación de usuario
+// Crear nuevo usuario
 const createUser = async (userData) => {
-  const response = await fetch('/mocks/usuarios.json');
-  const users = await response.json();
+  const response = await fetch('http://localhost:3000/api/usuarios', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(userData)
+  });
   
-  const newUser = {
-    id: Math.max(...users.map(u => u.id)) + 1,
-    ...userData,
-    fecha_registro: new Date().toISOString().split('T')[0]
-  };
-  
-  // En una implementación real, esto se enviaría a un servidor
-  console.log('Usuario creado:', newUser);
-  return newUser;
+  const result = await response.json();
+  return result.data;
 };
+
+// Ejemplo de uso
+const newUser = await createUser({
+  nombre: 'Nuevo',
+  apellido: 'Usuario',
+  email: 'nuevo@email.com',
+  contraseña: 'password123',
+  telefono: '11-9999-9999'
+});
 ```
 
-### Actualizar (Simulado)
+### Actualizar Producto
 ```javascript
-// Simular actualización de producto
+// Actualizar producto existente
 const updateProduct = async (id, productData) => {
-  const response = await fetch('/mocks/productos.json');
-  const products = await response.json();
+  const response = await fetch(`http://localhost:3000/api/productos/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(productData)
+  });
   
-  const updatedProduct = {
-    ...products.find(p => p.id === parseInt(id)),
-    ...productData
-  };
-  
-  console.log('Producto actualizado:', updatedProduct);
-  return updatedProduct;
+  const result = await response.json();
+  return result.data;
 };
+
+// Ejemplo de uso
+const updatedProduct = await updateProduct(1, {
+  precio: 799.99,
+  stock: 30,
+  disponible: false
+});
 ```
 
-### Eliminar (Simulado)
+### Crear Venta
 ```javascript
-// Simular eliminación de venta
-const deleteSale = async (id) => {
-  const response = await fetch('/mocks/ventas.json');
-  const sales = await response.json();
+// Crear nueva venta
+const createSale = async (saleData) => {
+  const response = await fetch('http://localhost:3000/api/ventas', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(saleData)
+  });
   
-  const filteredSales = sales.filter(sale => sale.id !== parseInt(id));
-  console.log('Ventas después de eliminar:', filteredSales);
-  return filteredSales;
+  const result = await response.json();
+  return result.data;
 };
+
+// Ejemplo de uso
+const newSale = await createSale({
+  id_usuario: 1,
+  direccion: 'Dirección 123',
+  productos: [
+    {
+      id_producto: 1,
+      cantidad: 1
+    }
+  ],
+  metodo_pago: 'tarjeta_credito',
+  envio_gratis: false
+});
 ```
 
-## Validación de Datos
-
-### Schema Validation
+### Eliminar Usuario (con verificación de integridad)
 ```javascript
-// Validar estructura de usuario
-const validateUser = (user) => {
-  const required = ['id', 'nombre', 'apellido', 'email', 'activo'];
-  const missing = required.filter(field => !(field in user));
+// Eliminar usuario (si no tiene ventas asociadas)
+const deleteUser = async (id) => {
+  const response = await fetch(`http://localhost:3000/api/usuarios/${id}`, {
+    method: 'DELETE'
+  });
   
-  if (missing.length > 0) {
-    throw new Error(`Campos faltantes: ${missing.join(', ')}`);
+  const result = await response.json();
+  
+  if (response.ok) {
+    return result.data;
+  } else {
+    throw new Error(result.message);
   }
-  
-  if (!user.email.includes('@')) {
-    throw new Error('Email inválido');
-  }
-  
-  return true;
 };
 
-// Validar estructura de producto
-const validateProduct = (product) => {
-  const required = ['id', 'nombre', 'precio', 'stock', 'disponible'];
-  const missing = required.filter(field => !(field in product));
-  
-  if (missing.length > 0) {
-    throw new Error(`Campos faltantes: ${missing.join(', ')}`);
-  }
-  
-  if (product.precio <= 0) {
-    throw new Error('El precio debe ser mayor a 0');
-  }
-  
-  return true;
-};
+// Ejemplo de uso
+try {
+  const deletedUser = await deleteUser(5);
+  console.log('Usuario eliminado:', deletedUser);
+} catch (error) {
+  console.error('Error al eliminar usuario:', error.message);
+}
 ```
+
+### Validaciones Implementadas
+
+#### Usuarios
+- **Campos obligatorios**: nombre, apellido, email, contraseña
+- **Email**: Debe contener el símbolo @
+- **Tipos**: nombre, apellido, email, contraseña deben ser strings
+- **Email único**: Verifica que el email no exista previamente
+
+#### Productos
+- **Campos obligatorios**: nombre, desc, precio, stock, categoria
+- **Precio**: Debe ser mayor a 0
+- **Stock**: No puede ser negativo
+- **Tipos**: nombre, desc, categoria deben ser strings; precio, stock deben ser numbers
+
+#### Ventas
+- **Campos obligatorios**: id_usuario, dirección, productos, metodo_pago
+- **Productos**: Debe ser un array con al menos un elemento
+- **Existencia**: Verifica que el usuario exista
+- **Stock**: Verifica que haya stock suficiente para todos los productos
 
 ## Relaciones y Consistencia
 
-### Verificación de Integridad
+### Verificación de Integridad Automática
+
+#### Eliminación de Usuarios
 ```javascript
-// Verificar que los usuarios en ventas existen
-const validateSaleUsers = async () => {
-  const [users, sales] = await Promise.all([
-    fetch('/mocks/usuarios.json').then(r => r.json()),
-    fetch('/mocks/ventas.json').then(r => r.json())
-  ]);
+// La API verifica automáticamente las relaciones
+const deleteUser = async (id) => {
+  const response = await fetch(`http://localhost:3000/api/usuarios/${id}`, {
+    method: 'DELETE'
+  });
   
-  const userIds = users.map(u => u.id);
-  const invalidSales = sales.filter(sale => !userIds.includes(sale.id_usuario));
+  const result = await response.json();
   
-  if (invalidSales.length > 0) {
-    console.error('Ventas con usuarios inválidos:', invalidSales);
-    return false;
+  // Si el usuario tiene ventas asociadas, la API devuelve error 400
+  if (!response.ok) {
+    throw new Error(result.message);
   }
   
-  return true;
-};
-
-// Verificar que los productos en ventas existen
-const validateSaleProducts = async () => {
-  const [products, sales] = await Promise.all([
-    fetch('/mocks/productos.json').then(r => r.json()),
-    fetch('/mocks/ventas.json').then(r => r.json())
-  ]);
-  
-  const productIds = products.map(p => p.id);
-  const allValid = sales.every(sale => 
-    sale.productos.every(item => productIds.includes(item.id_producto))
-  );
-  
-  return allValid;
+  return result.data;
 };
 ```
 
-## Evolución a API Real (Entrega 2)
-
-### Plan de Migración
+#### Creación de Ventas
 ```javascript
-// Estructura futura de servicios
-class ApiService {
-  constructor(baseUrl) {
+// La API verifica stock y existencia de productos automáticamente
+const createSale = async (saleData) => {
+  const response = await fetch('http://localhost:3000/api/ventas', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(saleData)
+  });
+  
+  const result = await response.json();
+  
+  // Si no hay stock o productos no existen, la API devuelve error 400
+  if (!response.ok) {
+    throw new Error(result.message);
+  }
+  
+  return result.data;
+};
+```
+
+## Manejo de Errores de la API
+
+### Códigos de Error
+- **200**: Success - Operación exitosa
+- **201**: Created - Recurso creado exitosamente
+- **400**: Bad Request - Datos inválidos o incompletos
+- **404**: Not Found - Recurso no encontrado
+- **500**: Internal Server Error - Error del servidor
+
+### Ejemplos de Respuestas de Error
+
+#### Error de Validación
+```json
+{
+  "error": "Datos incompletos",
+  "message": "Todos los campos son obligatorios: nombre, apellido, email, contraseña"
+}
+```
+
+#### Error de Integridad
+```json
+{
+  "error": "Error de integridad de datos",
+  "message": "No se puede eliminar el usuario 1 porque tiene 2 ventas asociadas",
+  "ventasAsociadas": [
+    {
+      "id_venta": 1,
+      "fecha": "2024-04-10T14:30:00Z",
+      "total": 999.98
+    }
+  ]
+}
+```
+
+#### Stock Insuficiente
+```json
+{
+  "error": "Stock insuficiente",
+  "message": "Los siguientes productos no tienen stock suficiente",
+  "productosSinStock": [
+    {
+      "id_producto": 1,
+      "nombre": "Laptop Dell Inspiron 15",
+      "stock_disponible": 2,
+      "cantidad_requerida": 5
+    }
+  ]
+}
+```
+
+## Ejemplos de Uso Completo
+
+### Frontend con la API Real
+
+```javascript
+// Servicio de API para interactuar con el backend
+class SalesCoreAPI {
+  constructor(baseUrl = 'http://localhost:3000') {
     this.baseUrl = baseUrl;
   }
-  
+
   async getUsers() {
-    // Entrega 1: fetch('/mocks/usuarios.json')
-    // Entrega 2: fetch(`${this.baseUrl}/users`)
-    return fetch('/mocks/usuarios.json').then(r => r.json());
+    const response = await fetch(`${this.baseUrl}/api/usuarios`);
+    const result = await response.json();
+    return result.data;
   }
-  
+
   async createUser(userData) {
-    // Entrega 1: Simulación local
-    // Entrega 2: POST `${this.baseUrl}/users`
-    return this.simulateCreate('usuarios', userData);
-  }
-  
-  async simulateCreate(entity, data) {
-    console.log(`Creando ${entity}:`, data);
-    return { id: Date.now(), ...data };
-  }
-}
-```
-
-## Manejo de Errores
-
-### Errores Actuales
-```javascript
-// Manejo de errores en fetch
-const fetchData = async (url) => {
-  try {
-    const response = await fetch(url);
+    const response = await fetch(`${this.baseUrl}/api/usuarios`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData)
+    });
+    
+    const result = await response.json();
     
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(result.message);
     }
     
-    return await response.json();
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
+    return result.data;
   }
-};
-```
 
-### Errores Futuros
-```javascript
-// Estructura de errores para API real
-class ApiError extends Error {
-  constructor(message, code, details) {
-    super(message);
-    this.name = 'ApiError';
-    this.code = code;
-    this.details = details;
+  async getProducts() {
+    const response = await fetch(`${this.baseUrl}/api/productos`);
+    const result = await response.json();
+    return result.data;
+  }
+
+  async getProductsByCategory(category) {
+    const response = await fetch(`${this.baseUrl}/api/productos/categoria/${category}`);
+    const result = await response.json();
+    return result.data;
+  }
+
+  async createSale(saleData) {
+    const response = await fetch(`${this.baseUrl}/api/ventas`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(saleData)
+    });
+    
+    const result = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(result.message);
+    }
+    
+    return result.data;
+  }
+
+  async updateUser(id, userData) {
+    const response = await fetch(`${this.baseUrl}/api/usuarios/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(userData)
+    });
+    
+    const result = await response.json();
+    return result.data;
+  }
+
+  async deleteUser(id) {
+    const response = await fetch(`${this.baseUrl}/api/usuarios/${id}`, {
+      method: 'DELETE'
+    });
+    
+    const result = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(result.message);
+    }
+    
+    return result.data;
   }
 }
 
-// Ejemplo de uso
-const handleApiError = (error) => {
-  if (error instanceof ApiError) {
-    switch (error.code) {
-      case 'VALIDATION_ERROR':
-        console.error('Datos inválidos:', error.details);
-        break;
-      case 'NOT_FOUND':
-        console.error('Recurso no encontrado');
-        break;
-      default:
-        console.error('Error desconocido:', error.message);
-    }
-  }
-};
-```
+// Uso en el frontend
+const api = new SalesCoreAPI();
 
-## Ejemplos de Uso
-
-### Cargar y Mostrar Datos
-```javascript
-// Ejemplo completo para cargar y mostrar usuarios
-const loadAndDisplayUsers = async () => {
+// Cargar usuarios
+const loadUsers = async () => {
   try {
-    const users = await fetchData('/mocks/usuarios.json');
-    
-    const usersList = document.getElementById('users-list');
-    usersList.innerHTML = users.map(user => `
-      <div class="user-card">
-        <h3>${user.nombre} ${user.apellido}</h3>
-        <p>Email: ${user.email}</p>
-        <p>Estado: ${user.activo ? 'Activo' : 'Inactivo'}</p>
-        <p>Premium: ${user.premium ? 'Sí' : 'No'}</p>
-      </div>
-    `).join('');
-    
+    const users = await api.getUsers();
+    renderUsers(users);
   } catch (error) {
-    console.error('Error al cargar usuarios:', error);
+    console.error('Error al cargar usuarios:', error.message);
+    showError(error.message);
+  }
+};
+
+// Crear nuevo usuario
+const handleCreateUser = async (userData) => {
+  try {
+    const newUser = await api.createUser(userData);
+    showSuccess('Usuario creado correctamente');
+    loadUsers(); // Recargar lista
+  } catch (error) {
+    console.error('Error al crear usuario:', error.message);
+    showError(error.message);
   }
 };
 ```
+
+### Testing de la API
+
+```javascript
+// Funciones de testing
+const testAPI = async () => {
+  console.log('=== Testing API ===');
+  
+  try {
+    // Test 1: Obtener usuarios
+    console.log('1. Obteniendo usuarios...');
+    const users = await api.getUsers();
+    console.log(`   Usuarios obtenidos: ${users.length}`);
+    
+    // Test 2: Crear usuario
+    console.log('2. Creando usuario...');
+    const newUser = await api.createUser({
+      nombre: 'Test',
+      apellido: 'User',
+      email: 'test@email.com',
+      contraseña: 'password123'
+    });
+    console.log(`   Usuario creado: ${newUser.nombre} ${newUser.apellido}`);
+    
+    // Test 3: Obtener productos
+    console.log('3. Obteniendo productos...');
+    const products = await api.getProducts();
+    console.log(`   Productos obtenidos: ${products.length}`);
+    
+    console.log('=== Tests completados ===');
+  } catch (error) {
+    console.error('Error en testing:', error.message);
+  }
+};
+
+// Ejecutar tests
+testAPI();

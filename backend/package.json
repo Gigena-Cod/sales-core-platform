@@ -1,0 +1,27 @@
+{
+  "name": "sales-core-platform-backend",
+  "version": "1.0.0",
+  "description": "Backend para TP Aplicaciones Web 2 - Sales Core Platform",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express",
+    "api",
+    "nodejs",
+    "tp-aplicaciones-web-2"
+  ],
+  "author": "Estudiante TP Aplicaciones Web 2",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
