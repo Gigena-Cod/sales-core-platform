@@ -228,6 +228,48 @@ cd docsify && python -m http.server 8080
 cd public && python -m http.server 3001
 ```
 
+## 2° Etapa - Servidor Express.js y Rutas de Enrutamiento
+
+### Requisitos Cumplidos
+
+#### Productos - 2 GET, 2 POST, 1 PUT
+- **GET** `/api/products` - Consultar todos los productos
+- **GET** `/api/products/:id` - Consultar producto por ID
+- **POST** `/api/products` - Crear nuevo producto
+- **POST** `/api/products/search` - Búsqueda avanzada (parámetros sensibles)
+- **PUT** `/api/products/:id` - Actualizar producto existente
+
+#### Usuarios - 2 GET, 2 POST, 1 PUT, 1 DELETE
+- **GET** `/api/users` - Consultar todos los usuarios
+- **GET** `/api/users/:id` - Consultar usuario por ID
+- **POST** `/api/users` - Crear nuevo usuario
+- **POST** `/api/users/login` - Inicio de sesión (parámetros sensibles: email, contraseña)
+- **PUT** `/api/users/:id` - Actualizar usuario existente
+- **DELETE** `/api/users/:id` - Eliminar usuario **con integridad de datos**
+
+#### Ventas - 2 GET, 2 POST, 1 PUT
+- **GET** `/api/sales` - Consultar todas las ventas
+- **GET** `/api/sales/:id` - Consultar venta por ID
+- **POST** `/api/sales` - Crear nueva venta
+- **POST** `/api/sales/statistics` - Estadísticas (parámetros sensibles: fechas, user_id)
+- **PUT** `/api/sales/:id` - Actualizar venta existente
+
+### Integridad de Datos Implementada
+- **DELETE `/api/users/:id`** verifica integridad referencial:
+  - No permite eliminar usuarios con ventas asociadas
+  - Retorna error 400 si el usuario tiene ventas
+  - Protege contra ventas huérfanas
+
+### Archivos de Configuración
+- **.gitignore** configurado con:
+  ```
+  # Dependencias de Node.js
+  node_modules/
+  
+  # Directorio de dependencias generadas por npm
+  package-lock.json
+  ```
+
 ## API Endpoints
 
 ### Products (`/api/products`)
@@ -315,6 +357,70 @@ curl -X POST http://localhost:3000/api/sales/statistics \
   -H "Content-Type: application/json" \
   -d '{"start_date":"2024-01-01","end_date":"2024-12-31"}'
 ```
+
+## Entrega 2° Etapa - Verificación Final
+
+### Checklist de Requisitos Cumplidos
+
+#### Servidor Express.js
+- [x] **Servidor creado** con Express.js
+- [x] **Middleware configurado**: helmet, cors, morgan
+- [x] **Puerto 3000** para desarrollo local
+
+#### Rutas de Enrutamiento por Entidad
+
+**Productos:**
+- [x] **2 GET**: `/api/products`, `/api/products/:id`
+- [x] **2 POST**: `/api/products`, `/api/products/search`
+- [x] **1 PUT**: `/api/products/:id`
+
+**Usuarios:**
+- [x] **2 GET**: `/api/users`, `/api/users/:id`
+- [x] **2 POST**: `/api/users`, `/api/users/login`
+- [x] **1 PUT**: `/api/users/:id`
+- [x] **1 DELETE**: `/api/users/:id` con integridad
+
+**Ventas:**
+- [x] **2 GET**: `/api/sales`, `/api/sales/:id`
+- [x] **2 POST**: `/api/sales`, `/api/sales/statistics`
+- [x] **1 PUT**: `/api/sales/:id`
+
+#### Parámetros Sensibles
+- [x] **POST `/api/products/search`**: filtros de precio, categoría
+- [x] **POST `/api/users/login`**: email, contraseña
+- [x] **POST `/api/sales/statistics`**: fechas, user_id
+
+#### Integridad de Datos
+- [x] **DELETE `/api/users/:id`** verifica ventas asociadas
+- [x] **Error 400** si intenta eliminar usuario con ventas
+- [x] **Protección contra datos huérfanos**
+
+#### Archivos de Configuración
+- [x] **.gitignore** con `node_modules/` y `package-lock.json`
+- [x] **Documentación de rutas** en README principal
+- [x] **Ejemplos cURL** para testing
+
+#### Arquitectura Adicional
+- [x] **Patrón MVC** implementado
+- [x] **Notación de puntos** en nombres
+- [x] **Endpoints en inglés**
+- [x] **Separación de responsabilidades**
+
+### Para Testing
+```bash
+# Instalar y ejecutar
+cd backend
+npm install
+npm start
+
+# Probar endpoints
+curl http://localhost:3000/api/products
+curl http://localhost:3000/api/users
+curl http://localhost:3000/api/sales
+```
+
+### Entrega
+**Link del repositorio**: [Enviar URL de GitHub]
 
 ## Características de Seguridad
 
