@@ -228,92 +228,92 @@ cd docsify && python -m http.server 8080
 cd public && python -m http.server 3001
 ```
 
-## Endpoints de la API
+## API Endpoints
 
-### Productos
-- `GET /api/productos` - Obtener todos los productos (con filtros opcionales: categoria, disponible, destacado)
-- `GET /api/productos/:id` - Obtener producto por ID
-- `POST /api/productos` - Crear nuevo producto (requiere: nombre, precio, categoria)
-- `POST /api/productos/search` - Búsqueda avanzada de productos (body: query, precio_min, precio_max, categoria)
-- `PUT /api/productos/:id` - Actualizar producto existente
+### Products (`/api/products`)
+- `GET /api/products` - Get all products (optional filters: category, available, featured)
+- `GET /api/products/:id` - Get product by ID
+- `POST /api/products` - Create new product (required: nombre, precio, categoria)
+- `POST /api/products/search` - Advanced product search (body: query, price_min, price_max, category)
+- `PUT /api/products/:id` - Update existing product
 
-### Usuarios
-- `GET /api/usuarios` - Obtener todos los usuarios (con filtros opcionales: activo, premium)
-- `GET /api/usuarios/:id` - Obtener usuario por ID
-- `POST /api/usuarios` - Crear nuevo usuario (requiere: nombre, apellido, email, contraseña)
-- `POST /api/usuarios/login` - Inicio de sesión (requiere: email, contraseña)
-- `PUT /api/usuarios/:id` - Actualizar usuario existente
-- `DELETE /api/usuarios/:id` - Eliminar usuario (verifica integridad de datos con ventas asociadas)
+### Users (`/api/users`)
+- `GET /api/users` - Get all users (optional filters: active, premium)
+- `GET /api/users/:id` - Get user by ID
+- `POST /api/users` - Create new user (required: nombre, apellido, email, contraseña)
+- `POST /api/users/login` - User login (required: email, contraseña)
+- `PUT /api/users/:id` - Update existing user
+- `DELETE /api/users/:id` - Delete user (checks data integrity with associated sales)
 
-### Ventas
-- `GET /api/ventas` - Obtener todas las ventas (con filtros opcionales: estado, id_usuario, metodo_pago)
-- `GET /api/ventas/:id` - Obtener venta por ID
-- `POST /api/ventas` - Crear nueva venta (requiere: id_usuario, direccion, productos, metodo_pago)
-- `POST /api/ventas/estadisticas` - Obtener estadísticas de ventas (body: fecha_inicio, fecha_fin, id_usuario)
-- `PUT /api/ventas/:id` - Actualizar venta existente
+### Sales (`/api/sales`)
+- `GET /api/sales` - Get all sales (optional filters: status, user_id, payment_method)
+- `GET /api/sales/:id` - Get sale by ID
+- `POST /api/sales` - Create new sale (required: user_id, address, products, payment_method)
+- `POST /api/sales/statistics` - Get sales statistics (body: start_date, end_date, user_id)
+- `PUT /api/sales/:id` - Update existing sale
 
 ### General
-- `GET /` - Ruta de bienvenida con información de la API
+- `GET /` - Welcome route with API information
 
-## Ejemplos de Uso de la API
+## API Usage Examples
 
-### Productos
+### Products (`/api/products`)
 ```bash
-# Obtener todos los productos
-curl http://localhost:3000/api/productos
+# Get all products
+curl http://localhost:3000/api/products
 
-# Filtrar productos por categoría
-curl http://localhost:3000/api/productos?categoria=Electrónica
+# Filter products by category
+curl http://localhost:3000/api/products?category=Electrónica
 
-# Obtener productos destacados
-curl http://localhost:3000/api/productos?destacado=true
+# Get featured products
+curl http://localhost:3000/api/products?featured=true
 
-# Crear nuevo producto
-curl -X POST http://localhost:3000/api/productos \
+# Create new product
+curl -X POST http://localhost:3000/api/products \
   -H "Content-Type: application/json" \
   -d '{"nombre":"Nuevo Producto","precio":299.99,"categoria":"Electrónica"}'
 
-# Búsqueda avanzada
-curl -X POST http://localhost:3000/api/productos/search \
+# Advanced search
+curl -X POST http://localhost:3000/api/products/search \
   -H "Content-Type: application/json" \
-  -d '{"query":"laptop","precio_min":500,"precio_max":1500}'
+  -d '{"query":"laptop","price_min":500,"price_max":1500}'
 ```
 
-### Usuarios
+### Users (`/api/users`)
 ```bash
-# Obtener usuarios activos
-curl http://localhost:3000/api/usuarios?activo=true
+# Get active users
+curl http://localhost:3000/api/users?active=true
 
-# Crear nuevo usuario
-curl -X POST http://localhost:3000/api/usuarios \
+# Create new user
+curl -X POST http://localhost:3000/api/users \
   -H "Content-Type: application/json" \
   -d '{"nombre":"Juan","apellido":"Pérez","email":"juan@email.com","contraseña":"password123"}'
 
-# Iniciar sesión
-curl -X POST http://localhost:3000/api/usuarios/login \
+# Login
+curl -X POST http://localhost:3000/api/users/login \
   -H "Content-Type: application/json" \
   -d '{"email":"juan@email.com","contraseña":"password123"}'
 ```
 
-### Ventas
+### Sales (`/api/sales`)
 ```bash
-# Obtener ventas completadas
-curl http://localhost:3000/api/ventas?estado=completado
+# Get completed sales
+curl http://localhost:3000/api/sales?status=completado
 
-# Crear nueva venta
-curl -X POST http://localhost:3000/api/ventas \
+# Create new sale
+curl -X POST http://localhost:3000/api/sales \
   -H "Content-Type: application/json" \
   -d '{
-    "id_usuario": 1,
-    "direccion": "Calle 123, Ciudad",
-    "productos": [{"id_producto": 1, "cantidad": 2}],
-    "metodo_pago": "tarjeta_credito"
+    "user_id": 1,
+    "address": "Calle 123, Ciudad",
+    "products": [{"product_id": 1, "quantity": 2}],
+    "payment_method": "tarjeta_credito"
   }'
 
-# Obtener estadísticas
-curl -X POST http://localhost:3000/api/ventas/estadisticas \
+# Get statistics
+curl -X POST http://localhost:3000/api/sales/statistics \
   -H "Content-Type: application/json" \
-  -d '{"fecha_inicio":"2024-01-01","fecha_fin":"2024-12-31"}'
+  -d '{"start_date":"2024-01-01","end_date":"2024-12-31"}'
 ```
 
 ## Características de Seguridad
