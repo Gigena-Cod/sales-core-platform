@@ -230,28 +230,100 @@ cd public && python -m http.server 3001
 
 ## Endpoints de la API
 
-### Usuarios
-- `GET /api/usuarios` - Obtener todos los usuarios
-- `GET /api/usuarios/:id` - Obtener usuario por ID
-- `POST /api/usuarios` - Crear nuevo usuario
-- `PUT /api/usuarios/:id` - Actualizar usuario
-- `DELETE /api/usuarios/:id` - Eliminar usuario
-
 ### Productos
-- `GET /api/productos` - Obtener todos los productos
+- `GET /api/productos` - Obtener todos los productos (con filtros opcionales: categoria, disponible, destacado)
 - `GET /api/productos/:id` - Obtener producto por ID
-- `GET /api/productos/categoria/:categoria` - Filtrar por categoría
-- `POST /api/productos` - Crear nuevo producto
-- `PUT /api/productos/:id` - Actualizar producto
-- `DELETE /api/productos/:id` - Eliminar producto
+- `POST /api/productos` - Crear nuevo producto (requiere: nombre, precio, categoria)
+- `POST /api/productos/search` - Búsqueda avanzada de productos (body: query, precio_min, precio_max, categoria)
+- `PUT /api/productos/:id` - Actualizar producto existente
+
+### Usuarios
+- `GET /api/usuarios` - Obtener todos los usuarios (con filtros opcionales: activo, premium)
+- `GET /api/usuarios/:id` - Obtener usuario por ID
+- `POST /api/usuarios` - Crear nuevo usuario (requiere: nombre, apellido, email, contraseña)
+- `POST /api/usuarios/login` - Inicio de sesión (requiere: email, contraseña)
+- `PUT /api/usuarios/:id` - Actualizar usuario existente
+- `DELETE /api/usuarios/:id` - Eliminar usuario (verifica integridad de datos con ventas asociadas)
 
 ### Ventas
-- `GET /api/ventas` - Obtener todas las ventas
+- `GET /api/ventas` - Obtener todas las ventas (con filtros opcionales: estado, id_usuario, metodo_pago)
 - `GET /api/ventas/:id` - Obtener venta por ID
-- `GET /api/ventas/usuario/:id` - Obtener ventas por usuario
-- `POST /api/ventas` - Crear nueva venta
-- `PUT /api/ventas/:id` - Actualizar venta
-- `DELETE /api/ventas/:id` - Eliminar venta
+- `POST /api/ventas` - Crear nueva venta (requiere: id_usuario, direccion, productos, metodo_pago)
+- `POST /api/ventas/estadisticas` - Obtener estadísticas de ventas (body: fecha_inicio, fecha_fin, id_usuario)
+- `PUT /api/ventas/:id` - Actualizar venta existente
+
+### General
+- `GET /` - Ruta de bienvenida con información de la API
+
+## Ejemplos de Uso de la API
+
+### Productos
+```bash
+# Obtener todos los productos
+curl http://localhost:3000/api/productos
+
+# Filtrar productos por categoría
+curl http://localhost:3000/api/productos?categoria=Electrónica
+
+# Obtener productos destacados
+curl http://localhost:3000/api/productos?destacado=true
+
+# Crear nuevo producto
+curl -X POST http://localhost:3000/api/productos \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Nuevo Producto","precio":299.99,"categoria":"Electrónica"}'
+
+# Búsqueda avanzada
+curl -X POST http://localhost:3000/api/productos/search \
+  -H "Content-Type: application/json" \
+  -d '{"query":"laptop","precio_min":500,"precio_max":1500}'
+```
+
+### Usuarios
+```bash
+# Obtener usuarios activos
+curl http://localhost:3000/api/usuarios?activo=true
+
+# Crear nuevo usuario
+curl -X POST http://localhost:3000/api/usuarios \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Juan","apellido":"Pérez","email":"juan@email.com","contraseña":"password123"}'
+
+# Iniciar sesión
+curl -X POST http://localhost:3000/api/usuarios/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"juan@email.com","contraseña":"password123"}'
+```
+
+### Ventas
+```bash
+# Obtener ventas completadas
+curl http://localhost:3000/api/ventas?estado=completado
+
+# Crear nueva venta
+curl -X POST http://localhost:3000/api/ventas \
+  -H "Content-Type: application/json" \
+  -d '{
+    "id_usuario": 1,
+    "direccion": "Calle 123, Ciudad",
+    "productos": [{"id_producto": 1, "cantidad": 2}],
+    "metodo_pago": "tarjeta_credito"
+  }'
+
+# Obtener estadísticas
+curl -X POST http://localhost:3000/api/ventas/estadisticas \
+  -H "Content-Type: application/json" \
+  -d '{"fecha_inicio":"2024-01-01","fecha_fin":"2024-12-31"}'
+```
+
+## Características de Seguridad
+
+- **Validación de datos**: Todos los endpoints validan los datos de entrada
+- **Integridad referencial**: No se permite eliminar usuarios con ventas asociadas
+- **Verificación de stock**: Las ventas verifican disponibilidad de productos
+- **Passwords seguros**: Las contraseñas se hashean (simulado para desarrollo)
+- **CORS habilitado**: Para permitir conexiones desde frontend
+- **Headers de seguridad**: Helmet para protección básica
 
 ## Documentación
 

@@ -94,10 +94,72 @@ El proyecto utiliza tres archivos JSON interrelacionados como base de datos inic
 ## Tecnologías Utilizadas
 
 - **Frontend**: HTML5, CSS3, JavaScript
-- **Backend**: Node.js (próximas entregas)
+- **Backend**: Node.js, Express.js
+- **Architecture**: MVC Pattern with Services Layer
 - **Datos**: JSON (mock data)
 - **Documentación**: Docsify
 - **Deploy**: GitHub Pages, Vercel, Netlify
+
+## API Endpoints - Examples
+
+### Products (`/api/products`)
+```bash
+# Get all products
+curl http://localhost:3000/api/products
+
+# Filter products by category
+curl http://localhost:3000/api/products?category=Electrónica
+
+# Get featured products
+curl http://localhost:3000/api/products?featured=true
+
+# Create new product
+curl -X POST http://localhost:3000/api/products \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Nuevo Producto","precio":299.99,"categoria":"Electrónica"}'
+
+# Advanced search
+curl -X POST http://localhost:3000/api/products/search \
+  -H "Content-Type: application/json" \
+  -d '{"query":"laptop","price_min":500,"price_max":1500}'
+```
+
+### Users (`/api/users`)
+```bash
+# Get active users
+curl http://localhost:3000/api/users?active=true
+
+# Create new user
+curl -X POST http://localhost:3000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"nombre":"Juan","apellido":"Pérez","email":"juan@email.com","contraseña":"password123"}'
+
+# Login
+curl -X POST http://localhost:3000/api/users/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"juan@email.com","contraseña":"password123"}'
+```
+
+### Sales (`/api/sales`)
+```bash
+# Get completed sales
+curl http://localhost:3000/api/sales?status=completado
+
+# Create new sale
+curl -X POST http://localhost:3000/api/sales \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_id": 1,
+    "address": "Calle 123, Ciudad",
+    "products": [{"product_id": 1, "quantity": 2}],
+    "payment_method": "tarjeta_credito"
+  }'
+
+# Get statistics
+curl -X POST http://localhost:3000/api/sales/statistics \
+  -H "Content-Type: application/json" \
+  -d '{"start_date":"2024-01-01","end_date":"2024-12-31"}'
+```
 
 ## Navegación de la Documentación
 
