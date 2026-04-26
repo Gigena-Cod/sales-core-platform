@@ -1,5 +1,5 @@
-const express = require('express');
-const ProductController = require('../controllers/product.controller');
+import express from 'express';
+import ProductController from '../controllers/product.controller.js';
 
 const router = express.Router();
 const productController = new ProductController();
@@ -19,4 +19,4 @@ router.post('/search', productController.searchProducts.bind(productController))
 // PUT /api/productos/:id
 router.put('/:id', productController.updateProduct.bind(productController));
 
-module.exports = router;
+export default router;

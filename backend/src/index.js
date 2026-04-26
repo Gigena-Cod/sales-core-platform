@@ -1,12 +1,12 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
 
 // Import routes
-const productRoutes = require('./routes/product.routes');
-const userRoutes = require('./routes/user.routes');
-const saleRoutes = require('./routes/sale.routes');
+import productRoutes from './routes/product.routes.js';
+import userRoutes from './routes/user.routes.js';
+import saleRoutes from './routes/sale.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;

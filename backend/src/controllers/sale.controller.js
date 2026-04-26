@@ -1,4 +1,4 @@
-const Sale = require('../models/sale.model');
+import Sale from '../models/sale.model.js';
 
 class SaleController {
   constructor() {
@@ -84,4 +84,4 @@ class SaleController {
   }
 }
 
-module.exports = SaleController;
+export default SaleController;

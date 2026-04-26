@@ -1,5 +1,5 @@
-const express = require('express');
-const SaleController = require('../controllers/sale.controller');
+import express from 'express';
+import SaleController from '../controllers/sale.controller.js';
 
 const router = express.Router();
 const saleController = new SaleController();
@@ -19,4 +19,4 @@ router.post('/estadisticas', saleController.getStatistics.bind(saleController));
 // PUT /api/ventas/:id
 router.put('/:id', saleController.updateSale.bind(saleController));
 
-module.exports = router;
+export default router;

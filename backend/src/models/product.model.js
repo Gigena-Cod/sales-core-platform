@@ -1,88 +1,99 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-class User {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+class Product {
   constructor() {
-    this.users = JSON.parse(fs.readFileSync(path.join(__dirname, '../../mock/usuarios.json'), 'utf8'));
+    this.products = JSON.parse(fs.readFileSync(path.join(__dirname, '../../mock/productos.json'), 'utf8'));
   }
 
   findAll(filters = {}) {
-    let filteredUsers = this.users;
+    let filteredProducts = this.products;
 
-    if (filters.active !== undefined) {
-      filteredUsers = filteredUsers.filter(u => 
-        u.activo === (filters.active === 'true')
+    if (filters.category) {
+      filteredProducts = filteredProducts.filter(p => 
+        p.categoria.toLowerCase() === filters.category.toLowerCase()
+      );
+    }
+    if (filters.available !== undefined) {
+      filteredProducts = filteredProducts.filter(p => 
+        p.disponible === (filters.available === 'true')
+      );
+    }
+    if (filters.featured !== undefined) {
+      filteredProducts = filteredProducts.filter(p => 
+        p.destacado === (filters.featured === 'true')
       );
     }
 
-    if (filters.premium !== undefined) {
-      filteredUsers = filteredUsers.filter(u => 
-        u.premium === (filters.premium === 'true')
-      );
-    }
-
-    // No incluir contraseñas en la respuesta
-    return filteredUsers.map(({ contraseña, ...user }) => user);
+    return filteredProducts;
   }
 
   findById(id) {
-    const user = this.users.find(u => u.id === parseInt(id));
-    if (!user) return null;
-
-    // No incluir contraseña en la respuesta
-    const { contraseña, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return this.products.find(p => p.id === parseInt(id));
   }
 
-  findByEmail(email) {
-    return this.users.find(u => u.email === email);
+  search(criteria) {
+    let filteredProducts = this.products;
+
+    if (criteria.query) {
+      filteredProducts = filteredProducts.filter(p => 
+        p.nombre.toLowerCase().includes(criteria.query.toLowerCase()) ||
+        p.desc.toLowerCase().includes(criteria.query.toLowerCase())
+      );
+    }
+
+    if (criteria.price_min !== undefined) {
+      filteredProducts = filteredProducts.filter(p => 
+        p.precio >= parseFloat(criteria.price_min)
+      );
+    }
+
+    if (criteria.price_max !== undefined) {
+      filteredProducts = filteredProducts.filter(p => 
+        p.precio <= parseFloat(criteria.price_max)
+      );
+    }
+
+    if (criteria.category) {
+      filteredProducts = filteredProducts.filter(p => 
+        p.categoria.toLowerCase() === criteria.category.toLowerCase()
+      );
+    }
+
+    return filteredProducts;
   }
 
-  create(userData) {
-    const newUser = {
-      id: Math.max(...this.users.map(u => u.id)) + 1,
-      nombre: userData.nombre,
-      apellido: userData.apellido,
-      email: userData.email,
-      contraseña: `hashed_${userData.contraseña}`, // En producción usar bcrypt
-      activo: true,
-      fecha_registro: new Date().toISOString().split('T')[0],
-      telefono: userData.telefono || '',
-      premium: false
+  create(productData) {
+    const newProduct = {
+      id: Math.max(...this.products.map(p => p.id)) + 1,
+      nombre: productData.nombre,
+      desc: productData.desc || '',
+      precio: parseFloat(productData.precio),
+      imagen: productData.imagen || '',
+      stock: parseInt(productData.stock) || 0,
+      categoria: productData.categoria,
+      disponible: productData.available !== undefined ? productData.available : true,
+      destacado: productData.featured || false,
+      peso: parseFloat(productData.peso) || 0,
+      garantia: parseInt(productData.garantia) || 12
     };
 
-    this.users.push(newUser);
-    
-    // No incluir contraseña en la respuesta
-    const { contraseña, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
+    this.products.push(newProduct);
+    return newProduct;
   }
 
-  update(id, userData) {
-    const index = this.users.findIndex(u => u.id === parseInt(id));
+  update(id, productData) {
+    const index = this.products.findIndex(p => p.id === parseInt(id));
     if (index === -1) return null;
 
-    const updatedUser = { ...this.users[index], ...userData };
-    this.users[index] = updatedUser;
-
-    // No incluir contraseña en la respuesta
-    const { contraseña, ...userWithoutPassword } = updatedUser;
-    return userWithoutPassword;
-  }
-
-  delete(id) {
-    const index = this.users.findIndex(u => u.id === parseInt(id));
-    if (index === -1) return false;
-
-    this.users.splice(index, 1);
-    return true;
-  }
-
-  hasRelatedSales(id) {
-    const sales = JSON.parse(fs.readFileSync(path.join(__dirname, '../../mock/ventas.json'), 'utf8'));
-    const userSales = sales.filter(v => v.id_usuario === parseInt(id));
-    return userSales.length > 0;
+    const updatedProduct = { ...this.products[index], ...productData };
+    this.products[index] = updatedProduct;
+    return updatedProduct;
   }
 }
 
-module.exports = User;
+export default Product;
