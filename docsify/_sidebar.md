@@ -10,6 +10,10 @@
   - [Configuración](guide/configuration.md)
   - [Despliegue](guide/deployment.md)
 
+- **Frontend + BFF**
+
+  - [🎨 Arquitectura Frontend](frontend-bff-architecture.md)
+
 - **Guías**
 
   - [Guía de Desarrollo](guide/development.md)

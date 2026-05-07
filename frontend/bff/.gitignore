@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+
+# Lock files
+package-lock.json
+
+# Logs
+logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Build
+dist/
